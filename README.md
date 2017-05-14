@@ -65,7 +65,7 @@ I'd recommend setting up an alias in your shell. Something like `alias task='pyt
 - See all tasks that contain the word `foo` in the name or the tags: `task list
   foo`
 - Show the completed tasks that contain `foo`: `task list foo -c`
-- See all tasks due on a particular day: `task list dated 8-12-2042`
+- See all tasks due on a particular day: `task list dated 2014-12-31`
 
 ## Explanation of actions
 
