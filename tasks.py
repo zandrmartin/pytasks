@@ -87,8 +87,7 @@ def list_tasks(search, no_recurring, completed):
     if no_recurring:
         display_tasks = filter(lambda t: t.schedule is None, display_tasks)
 
-    if completed:
-        display_tasks = filter(lambda t: t.completed, display_tasks)
+    display_tasks = filter(lambda t: t.completed == completed, display_tasks)
 
     if len(search) > 0:
         new_tasks = []
