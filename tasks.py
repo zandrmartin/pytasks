@@ -156,7 +156,7 @@ def rename(id, name):
 @cli.command()
 def reorder():
     """Reset task ids."""
-    for t, i in enumerate(tasks):
+    for i, t in enumerate(tasks):
         t.id = i
 
     tasks.save(settings.data_file)
