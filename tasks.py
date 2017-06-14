@@ -94,10 +94,10 @@ def list_tasks(search, no_recurring, completed):
 
         for term in search:
             def _search_filter(t):
-                if term in t.name:
+                if term.lower() in t.name.lower():
                     return True
                 for tag in t.tags:
-                    if term in tag:
+                    if term.lower() in tag.lower():
                         return True
                 return False
 

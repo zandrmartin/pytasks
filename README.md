@@ -56,8 +56,8 @@ I'd recommend setting up an alias in your shell. Something like `alias task='pyt
 - Add a task due the 17th of every other month: `task add "do the monthly
   thing" -d 1-17-2017 -r 2 month`
 - Rename that task: `task rename <id> "do the bi-monthly thing"`
-- Add a task with some tags: `task add "take care of that stuff" -t stuff "take
-  care"`
+- Add a task with some tags: `task add "take care of that stuff" -t stuff -t
+  "take care"`
 - Change those tags: `task retag <id> stuff things`
 - Add a task due on Mondays and Thursdays: `task add "biweekly stuttered thing"
   -d monday -r monday,thursday`
