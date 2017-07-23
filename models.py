@@ -210,6 +210,9 @@ class TaskListDisplay:
         output = []
         bar = '-' * self.total_width
 
+        if not self.show_schedule:
+            self.col_widths['schedule'] = 0
+
         line = ''
         for heading in ['id', 'task', 'due', 'schedule', 'tags']:
             if self.col_widths[heading] > 0:
