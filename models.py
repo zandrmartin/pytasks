@@ -92,7 +92,6 @@ class Task:
         self.name = ''
         self._due = None
         self.schedule = None
-        self._tags = []
         self.completed = False
         self.recurs = False
 
@@ -112,14 +111,6 @@ class Task:
             self._due = scheduling.parse_due_date(d)
         else:
             self._due = d
-
-    @property
-    def tags(self):
-        return self._tags
-
-    @tags.setter
-    def tags(self, t):
-        self._tags = sorted(t)
 
     @property
     def display_id(self):
@@ -142,9 +133,6 @@ class Task:
         if self.schedule:
             attrs['schedule'] = self.schedule
 
-        if len(self.tags) > 0:
-            attrs['tags'] = self.tags
-
         return attrs
 
     def complete(self):
@@ -165,7 +153,6 @@ class TaskListDisplay:
         widths = {
             'id': max(map(lambda t: len(t.display_id), self.tasks)),
             'task': max(map(lambda t: len(t.name), self.tasks)),
-            'tags': max(map(lambda t: len(', '.join(t.tags)), self.tasks)),
         }
 
         def _due(due):
@@ -174,7 +161,8 @@ class TaskListDisplay:
 
         def _sched(sched):
             return len(sched) if sched is not None else 0
-        widths['schedule'] = max(map(_sched, [t.schedule for t in self.tasks]))
+        widths['schedule'] = 0 if not self.show_schedule \
+            else max(map(_sched, [t.schedule for t in self.tasks]))
 
         for title in widths:
             if 0 < widths[title] < len(title):
@@ -211,11 +199,8 @@ class TaskListDisplay:
         output = []
         bar = '-' * self.total_width
 
-        if not self.show_schedule:
-            self.col_widths['schedule'] = 0
-
         line = ''
-        for heading in ['id', 'task', 'due', 'schedule', 'tags']:
+        for heading in ['id', 'task', 'due', 'schedule']:
             if self.col_widths[heading] > 0:
                 line += heading.title().ljust(self.col_widths[heading] + 2)
             line.rstrip()
@@ -238,9 +223,6 @@ class TaskListDisplay:
                     line += t.schedule.ljust(self.col_widths['schedule'] + 2)
                 elif self.col_widths['schedule'] > 0:
                     line += ' ' * (self.col_widths['schedule'] + 2)
-
-            if self.col_widths['tags'] > 0:
-                line += ', '.join(t.tags).ljust(self.col_widths['tags'] + 2)
 
             if line.endswith('  '):
                 line.rstrip()

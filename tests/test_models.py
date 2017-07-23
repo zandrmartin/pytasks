@@ -88,16 +88,14 @@ def test_task(incomplete_task, weekly_recurring_task):
     assert t.name == ''
     assert t.due is None
     assert t.schedule is None
-    assert t.tags == []
     assert not t.completed
     assert not t.recurs
 
     # test initial attr override
-    t = models.Task(id=123, name='foobar', recurs=True, tags=['a', 'b', 'c'])
+    t = models.Task(id=123, name='foobar', recurs=True)
     assert t.id == 123
     assert t.name == 'foobar'
     assert t.recurs
-    assert t.tags == ['a', 'b', 'c']
 
     # test due date scheduling property
     t.due = 'today'
@@ -127,9 +125,6 @@ def test_task(incomplete_task, weekly_recurring_task):
 
     # schedule not set so it shouldn't even be in the attrs
     assert 'schedule' not in j
-
-    assert 'tags' in j
-    assert j['tags'] == ['a', 'b', 'c']
 
     # test complete() - non-recurring task should be completed
     assert not incomplete_task.completed

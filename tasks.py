@@ -19,8 +19,7 @@ def cli():
 @click.option('-r', '--recurs',
               help='Schedule for task to recur. Requires --due option. \
 Format: [#] <day|week|month|year|day-of-week>')
-@click.option('-t', '--tags', multiple=True, help='List of tags.')
-def add(name, due, recurs, tags):
+def add(name, due, recurs):
     """Add a new task."""
     t = models.Task(name=name)
 
@@ -30,8 +29,6 @@ def add(name, due, recurs, tags):
     if recurs is not None:
         t.recurs = True
         t.schedule = recurs
-
-    t.tags = [t for t in tags]
 
     tasks.add(t)
     tasks.save(settings.data_file)
@@ -102,12 +99,7 @@ def list_tasks(search, no_recurring, completed, all, show_schedule):
 
         for term in search:
             def _search_filter(t):
-                if term.lower() in t.name.lower():
-                    return True
-                for tag in t.tags:
-                    if term.lower() in tag.lower():
-                        return True
-                return False
+                return term.lower() in t.name.lower()
 
             new_tasks.extend(filter(_search_filter, selected))
 
@@ -169,21 +161,6 @@ def reorder():
         t.id = i
 
     tasks.save(settings.data_file)
-
-
-@cli.command()
-@click.argument('id')
-@click.argument('tags', nargs=-1)
-def retag(id, tags):
-    """Change tags of a task."""
-    t = tasks.find_by_id(id)
-    old_tags = ', '.join(t.tags)
-    t.tags = [t for t in tags]
-    new_tags = ', '.join(t.tags)
-    tasks.save(settings.data_file)
-
-    msg = f'Retagged task {t.name}; removed [{old_tags}], added [{new_tags}].'
-    click.echo(msg)
 
 
 @cli.command()
