@@ -3,7 +3,6 @@ import datetime
 import settings
 import models
 
-# list [dated] ["search term"] [-c|--completed] [-n|--no-recurring]
 
 tasks = models.TaskCollection()
 tasks.load(settings.data_file)
@@ -18,8 +17,8 @@ def cli():
 @click.argument('name')
 @click.option('-d', '--due', help='Due date of task.')
 @click.option('-r', '--recurs',
-              help='''Schedule for task to recur. Requires --due option.
-              Format: [#] <day|week|month|year|day-of-week>''')
+              help='Schedule for task to recur. Requires --due option. \
+Format: [#] <day|week|month|year|day-of-week>')
 @click.option('-t', '--tags', multiple=True, help='List of tags.')
 def add(name, due, recurs, tags):
     """Add a new task."""
@@ -80,14 +79,23 @@ def delete(ids):
               help='Only show non-recurring tasks.')
 @click.option('-c', '--completed', is_flag=True,
               help='Only show completed tasks.')
-def list_tasks(search, no_recurring, completed):
+@click.option('-a', '--all', is_flag=True,
+              help="Show all tasks (don't limit to next six months).")
+@click.option('-s', '--show-schedule', is_flag=True,
+              help='Show schedule of recurring tasks.')
+def list_tasks(search, no_recurring, completed, all, show_schedule):
     """List (or optionally search) tasks."""
-    display_tasks = list(tasks)
+    selected = list(tasks)
+
+    if not all:
+        limit = datetime.date.today() + datetime.timedelta(days=180)
+        selected = filter(lambda t: not t.recurs or t.recurs and t.due < limit,
+                          selected)
 
     if no_recurring:
-        display_tasks = filter(lambda t: t.schedule is None, display_tasks)
+        selected = filter(lambda t: t.schedule is None, selected)
 
-    display_tasks = filter(lambda t: t.completed == completed, display_tasks)
+    selected = filter(lambda t: t.completed == completed, selected)
 
     if len(search) > 0:
         new_tasks = []
@@ -101,16 +109,17 @@ def list_tasks(search, no_recurring, completed):
                         return True
                 return False
 
-            new_tasks.extend(filter(_search_filter, display_tasks))
+            new_tasks.extend(filter(_search_filter, selected))
 
-        display_tasks = new_tasks
+        selected = new_tasks
 
     def _date_sort(t):
         return datetime.date.max if t.due is None else t.due
 
-    display_tasks = sorted(display_tasks, key=_date_sort, reverse=True)
+    selected = sorted(selected, key=_date_sort, reverse=True)
 
-    display = models.TaskListDisplay(display_tasks)
+    display = models.TaskListDisplay(selected)
+    display.show_schedule = show_schedule
     click.echo(display.output())
 
 

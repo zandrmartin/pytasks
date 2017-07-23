@@ -15,7 +15,7 @@ def test_task_json_encoder(incomplete_task):
     due_string = incomplete_task.due.strftime(settings.date_format)
     due_json = f'"due": "{due_string}"'
 
-    task_json = incomplete_task.__json__()
+    task_json = incomplete_task.to_json()
     task_json['due'] = due_string
 
     j = json.dumps(incomplete_task, cls=models.TaskJSONEncoder)
@@ -107,8 +107,8 @@ def test_task(incomplete_task, weekly_recurring_task):
     t.id = 56
     assert t.display_id == '1k'
 
-    # test __json__ props
-    j = t.__json__()
+    # test to_json props
+    j = t.to_json()
 
     assert 'id' in j
     assert j['id'] == t.id

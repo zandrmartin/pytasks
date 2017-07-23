@@ -21,8 +21,8 @@ def base36(number):
 
 class TaskJSONEncoder(json.JSONEncoder):
     def default(self, o):
-        if hasattr(o, '__json__') and callable(o.__json__):
-            return o.__json__()
+        if hasattr(o, 'to_json') and callable(o.to_json):
+            return o.to_json()
 
         if type(o) in [dt.datetime, dt.date]:
             return o.strftime(settings.date_format)
@@ -89,9 +89,9 @@ class Task:
     def __init__(self, **kwargs):
         self.id = None
         self.name = ''
-        self.due = None
+        self._due = None
         self.schedule = None
-        self.tags = []
+        self._tags = []
         self.completed = False
         self.recurs = False
 
@@ -113,13 +113,21 @@ class Task:
             self._due = d
 
     @property
+    def tags(self):
+        return self._tags
+
+    @tags.setter
+    def tags(self, t):
+        self._tags = sorted(t)
+
+    @property
     def display_id(self):
         if self.id is None:
             return ''
 
         return base36(self.id)
 
-    def __json__(self):
+    def to_json(self):
         attrs = {
             'id': self.id,
             'name': self.name,
@@ -150,6 +158,7 @@ class TaskListDisplay:
 
     def __init__(self, tasks):
         self.tasks = tasks
+        self.show_schedule = False
 
     def _calculate_column_widths(self):
         widths = {
@@ -173,7 +182,7 @@ class TaskListDisplay:
         self._column_widths = widths
 
     @property
-    def column_widths(self):
+    def col_widths(self):
         if not hasattr(self, '_column_widths'):
             self._calculate_column_widths()
 
@@ -183,10 +192,10 @@ class TaskListDisplay:
     def total_width(self):
         if not hasattr(self, '_total_width'):
             # width of columns themselves
-            width = sum(self.column_widths.values())
+            width = sum(self.col_widths.values())
 
             # calculate width of 2-space gutters between columns
-            for w in self.column_widths.values():
+            for w in self.col_widths.values():
                 # add 2-space gutter for every non-zero column
                 if w > 0:
                     width += 2
@@ -203,30 +212,31 @@ class TaskListDisplay:
 
         line = ''
         for heading in ['id', 'task', 'due', 'schedule', 'tags']:
-            if self.column_widths[heading] > 0:
-                line += heading.title().ljust(self.column_widths[heading] + 2)
+            if self.col_widths[heading] > 0:
+                line += heading.title().ljust(self.col_widths[heading] + 2)
             line.rstrip()
 
         output.append(line)
         output.append(bar)
 
         for t in self.tasks:
-            line = t.display_id.ljust(self.column_widths['id'] + 2)
-            line += t.name.ljust(self.column_widths['task'] + 2)
+            line = t.display_id.ljust(self.col_widths['id'] + 2)
+            line += t.name.ljust(self.col_widths['task'] + 2)
 
             if t.due is not None:
                 line += t.due.strftime(self.date_format) \
-                    .ljust(self.column_widths['due'] + 2)
-            elif self.column_widths['due'] > 0:
-                line += ' ' * (self.column_widths['due'] + 2)
+                    .ljust(self.col_widths['due'] + 2)
+            elif self.col_widths['due'] > 0:
+                line += ' ' * (self.col_widths['due'] + 2)
 
-            if t.schedule is not None:
-                line += t.schedule.ljust(self.column_widths['schedule'] + 2)
-            elif self.column_widths['schedule'] > 0:
-                line += ' ' * (self.column_widths['schedule'] + 2)
+            if self.show_schedule:
+                if t.schedule is not None:
+                    line += t.schedule.ljust(self.col_widths['schedule'] + 2)
+                elif self.col_widths['schedule'] > 0:
+                    line += ' ' * (self.col_widths['schedule'] + 2)
 
-            if self.column_widths['tags'] > 0:
-                line += ', '.join(t.tags).ljust(self.column_widths['tags'] + 2)
+            if self.col_widths['tags'] > 0:
+                line += ', '.join(t.tags).ljust(self.col_widths['tags'] + 2)
 
             if line.endswith('  '):
                 line.rstrip()
