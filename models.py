@@ -6,17 +6,18 @@ import string
 
 
 def base36(number):
-    alphabet = string.digits + string.ascii_lowercase
-    ret = ''
-
     if number == 0:
         return '0'
 
-    while number:
-        number, i = divmod(number, 36)
-        ret = alphabet[i] + ret
+    alphabet = string.digits + string.ascii_lowercase
+    base = len(alphabet)
+    rv = []
 
-    return ret
+    while number:
+        number, i = divmod(number, base)
+        rv.insert(0, alphabet[i])
+
+    return ''.join(rv)
 
 
 class TaskJSONEncoder(json.JSONEncoder):
