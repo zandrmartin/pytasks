@@ -1,11 +1,15 @@
-import click
 import datetime
-import settings
+from os import path
+
+import click
+
 import models
+import settings
 
 
 tasks = models.TaskCollection()
-tasks.load(settings.data_file)
+if path.exists(settings.data_file):
+    tasks.load(settings.data_file)
 
 
 @click.group()

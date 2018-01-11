@@ -1,3 +1,5 @@
+![PRs welcome but not actively maintained](https://img.shields.io/badge/status-PRs%20welcome%20but%20not%20actively%20maintained-red.svg?style=flat-square)
+
 # pytasks
 
 A rewrite of [tasks.js](https://github.com/zandrmartin/tasks.js) in Python.
@@ -29,7 +31,8 @@ ids will be reused when tasks are deleted (either through `delete` or
 
 ## Usage
 
-`python3 tasks.py <action> <options>`
+1. `pip3 install .`
+2. `task <action> <option>`
 
 `<action>` is one of `add`, `clean-cache`, `complete`, `delete`, `list`,
 `postpone`, `rename`, `reschedule`, `status`
