@@ -2,7 +2,7 @@
 
 # pytasks
 
-A rewrite of [tasks.js](https://github.com/zandrmartin/tasks.js) in Python.
+A rewrite of [tasks.js](https://github.com/deathlyfrantic/tasks.js) in Python.
 
 ## Description
 
@@ -26,8 +26,8 @@ ids will be reused when tasks are deleted (either through `delete` or
 
 ## Requirements
 
-- [Click](http://click.pocoo.org)
-- [Pytest](https://pytest.org) [optional, if you want to run tests]
+* [Click](http://click.pocoo.org)
+* [Pytest](https://pytest.org) [optional, if you want to run tests]
 
 ## Usage
 
@@ -39,41 +39,39 @@ ids will be reused when tasks are deleted (either through `delete` or
 
 `<options>` depend on `<action>`:
 
-- `add "name of task" [<-d|--due> <date|day-of-week>] [<-r|--recurs> [#] <day|week|month|year|day-of-week>]`
-- `complete <id> [<id> <id> ...]`
-- `delete <id> [<id> <id> ...]`
-- `list [dated] ["search term"] [-c|--completed] [-n|--no-recurring]`
-- `postpone <date> <id> [<id> <id> ...]`
-- `rename <id> <name>`
-- `reschedule <schedule> <id> [<id> <id> ...]`
+* `add "name of task" [<-d|--due> <date|day-of-week>] [<-r|--recurs> [#] <day|week|month|year|day-of-week>]`
+* `complete <id> [<id> <id> ...]`
+* `delete <id> [<id> <id> ...]`
+* `list [dated] ["search term"] [-c|--completed] [-n|--no-recurring]`
+* `postpone <date> <id> [<id> <id> ...]`
+* `rename <id> <name>`
+* `reschedule <schedule> <id> [<id> <id> ...]`
 
 ## Examples
 
 I'd recommend setting up an alias in your shell. Something like `alias task='python3 tasks.py'`.
 
-- Add a task due on Tuesday: `task add "do that thing" -d tuesday`
-- Change that task to be due Wednesday: `task postpone wednesday <id>`
-- Add a task due the 17th of every other month: `task add "do the monthly
-  thing" -d 1-17-2017 -r 2 month`
-- Rename that task: `task rename <id> "do the bi-monthly thing"`
-- Add a task due on Mondays and Thursdays: `task add "biweekly stuttered thing"
-  -d monday -r monday,thursday`
-- See all tasks that are not completed: `task list`
-- See all tasks that contain the word `foo` in the name: `task list foo`
-- Show the completed tasks that contain `foo`: `task list foo -c`
-- See all tasks due on a particular day: `task list dated 2014-12-31`
+* Add a task due on Tuesday: `task add "do that thing" -d tuesday`
+* Change that task to be due Wednesday: `task postpone wednesday <id>`
+* Add a task due the 17th of every other month: `task add "do the monthly thing" -d 1-17-2017 -r 2 month`
+* Rename that task: `task rename <id> "do the bi-monthly thing"`
+* Add a task due on Mondays and Thursdays: `task add "biweekly stuttered thing" -d monday -r monday,thursday`
+* See all tasks that are not completed: `task list`
+* See all tasks that contain the word `foo` in the name: `task list foo`
+* Show the completed tasks that contain `foo`: `task list foo -c`
+* See all tasks due on a particular day: `task list dated 2014-12-31`
 
 ## Explanation of actions
 
-- `add` adds a task
-- `clean-cache` deletes all completed tasks from the data file
-- `complete` completes a task, either by marking it completed, or rescheduling
+* `add` adds a task
+* `clean-cache` deletes all completed tasks from the data file
+* `complete` completes a task, either by marking it completed, or rescheduling
   it for its next occurrence
-- `delete` deletes a task. There is no recovery.
-- `list` list tasks, optionally narrowed by some search criteria
-- `postpone` reschedule a specific task
-- `rename` rename a specific task
-- `status` a special command to list all tasks due today (or in the past)
+* `delete` deletes a task. There is no recovery.
+* `list` list tasks, optionally narrowed by some search criteria
+* `postpone` reschedule a specific task
+* `rename` rename a specific task
+* `status` a special command to list all tasks due today (or in the past)
   joined into a single string, for use in status bars e.g.
   [Lemonbar](https://github.com/LemonBoy/bar) etc.
 
