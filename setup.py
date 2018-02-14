@@ -8,8 +8,9 @@ setup(
     install_requires=[
         'click',
     ],
-    entry_points='''
-        [console_scripts]
-        task=tasks:cli
-    ''',
+    entry_points={
+        'console_scripts': [
+            'task=tasks:cli'
+        ]
+    }
 )
