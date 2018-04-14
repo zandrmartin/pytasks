@@ -1,0 +1,32 @@
+#compdef task
+
+__list_options () {
+    local -a opts=("${(@f)$(~/src/pytasks/venv/bin/python ~/src/pytasks/completion.py list_options $words)}")
+    if [[ $opts != "" ]]; then
+        _describe -t my-options 'options' opts
+    fi
+}
+
+__list_ids () {
+    return
+    local -a ids=("${(@f)$(~/src/pytasks/venv/bin/python ~/src/pytasks/completion.py list_ids $words)}")
+    if [[ $ids != "" ]]; then
+        _describe -t ids 'ids' ids
+    fi
+}
+
+_arguments -C \
+    '(-): :->command' \
+    '(-)*:: :->arg'
+
+case $state in
+    (command)
+        local -a cmds=("${(@f)$(~/src/pytasks/venv/bin/python ~/src/pytasks/completion.py list_commands)}")
+        _describe 'commands' cmds
+        ;;
+    (arg)
+        _alternative \
+            'my-options:options:__list_options' \
+            'ids:ids:__list_ids'
+        ;;
+esac

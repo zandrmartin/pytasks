@@ -1,0 +1,3 @@
+#compdef task
+opts=("${(@f)$(~/src/pytasks/venv/bin/python ~/src/pytasks/completion.py list_commands)}")
+_describe 'values' opts
